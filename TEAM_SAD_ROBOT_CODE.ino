@@ -47,10 +47,11 @@ int prevLeft = 0;
 int prevMid = 0;
 int prevRight = 0;
 
+// Reads if the sensor data is close to the old sensor data. If that has been the case for 1 second then it goes backwards.
+
 void SamePlace(int leftSensorData, int midSensorData, int rightSensorData, int &sameEnough, int &prevLeft, int &prevMid, int &prevRight){
 
-  const float tolerance = 20.0;  
-  const int sameEnoughThreshold = 50; 
+  const float tolerance = 20.0; 
 
   bool sameLeft  = fabs(leftSensorData  - prevLeft)  < tolerance;
   bool sameMid   = fabs(midSensorData   - prevMid)   < tolerance;
@@ -123,22 +124,22 @@ void loop() {
 
   float PIDInputNormalization = 100;
 
+  // The error is just left sensor data vs right sensor data devided by a magic number.
+  // The PIDnormalaztion variable came through testing. The error would be too big and the PID sytem thingy would always output it's max, so it had to be lowered.
+
   error = (float) (leftSensorDistance - rightSensorDistance) / PIDInputNormalization;
 
   PIDoutput = PIDController_Update(&pid, error);
 
   SamePlace(leftSensorDistance, midSensorDistance, rightSensorDistance, sameEnough, prevLeft, prevMid, prevRight);
 
-
-
-  PIDoutput = PIDController_Update(&pid, error);
-
   int baseSpeed = 200;
 
   int leftMotorSpeed  = (int) baseSpeed - PIDoutput * 5;
   int rightMotorSpeed = (int) baseSpeed + PIDoutput * 5;
 
-  
+  // PID system as we have it cant dodge things in it way, 
+  // so this code chunk does it.
 
   if(rightSensorDistance < 400 && midSensorDistance < 400){
     float scale = scaleFromDistance(leftSensorDistance);
