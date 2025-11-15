@@ -3,16 +3,16 @@
 
 struct PIDcontroller{
 
-  float Kp;
-  float Ki;
-  float Kd;
+  float proportional;
+  float integral;
+  float derivative;
 
   float dLowPassFilter;
 
   float limMin;
   float limMax;
 
-  float T;
+  float time;
 
   float integrator;
   float prevError;

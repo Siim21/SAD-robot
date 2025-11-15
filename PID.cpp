@@ -17,10 +17,10 @@ float PIDController_Update(PIDcontroller *pid, float error) {
 
 	float proportional;
 
-	proportional = error * pid->Kp;
+	proportional = error * pid->proportional;
 
   
-	pid->integrator += 0.5f * (error + pid->prevError) * pid->T * pid->Ki;
+	pid->integrator += 0.5f * (error + pid->prevError) * pid->time * pid->integral;
 
 	float limMaxInt, limMinInt;
 	
@@ -59,7 +59,7 @@ float PIDController_Update(PIDcontroller *pid, float error) {
 	}
 	
 		
-  pid->differentialator = -(pid->Kd * (error - pid->prevError)	+ (pid->dLowPassFilter - pid->T) * pid->differentialator) / (pid->dLowPassFilter + pid->T);
+  pid->differentialator = -(pid->derivative * (error - pid->prevError)	+ (pid->dLowPassFilter - pid->time) * pid->differentialator) / (pid->dLowPassFilter + pid->time);
 
 
   pid->out = proportional + pid->integrator + pid->differentialator;
